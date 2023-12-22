@@ -20,25 +20,28 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 public class TaxFX extends Application{
 	
-	
-	double taxableInc;
-	double AGI;
-	double grossTaxLib;
-	
+	private double taxableInc;
+	private double AGI;
+	private double grossTaxLib;
 	DropShadow shadow = new DropShadow();
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		launch();
 	}
+	
+	
 	@Override
 	public void start(Stage mainStage) throws Exception {
 		// setting scene f
@@ -55,8 +58,6 @@ public class TaxFX extends Application{
 			
 	}
 	public Pane app(Scene t) {
-		
-	
 		Font myFont = new Font("Impact",20);
 		Font txtfFont = new Font("Arial", 12);
 		
@@ -79,7 +80,7 @@ public class TaxFX extends Application{
 		statusLbl.setTranslateX(5);
 		statusLbl.setTranslateY(10);
 		
-		ChoiceBox<String> cb1 = new ChoiceBox<String>();
+		ChoiceBox<String> cb1 = new ChoiceBox<String>();//choice box for status
 		cb1.getItems().add("Single");
 		cb1.getItems().add("Married File Separately");
 		cb1.getItems().add("Married File Together");
@@ -113,7 +114,7 @@ public class TaxFX extends Application{
 		numOfDepLbl.setTranslateY(90);
 		
 		
-		ChoiceBox<Integer> cb2 = new ChoiceBox<Integer>();
+		ChoiceBox<Integer> cb2 = new ChoiceBox<Integer>();//choice box for depends
 		cb2.getItems().addAll(0,1,2,3,4,5,6,7,8,9,10);
 		cb2.setTranslateX(200);
 		cb2.setTranslateY(93);
@@ -143,6 +144,7 @@ public class TaxFX extends Application{
 		TextField nameTxtF = new TextField();
 		nameTxtF.setTranslateX(60);
 		nameTxtF.setTranslateY(174);
+		nameTxtF.setFont(txtfFont);
 		
 		Text errorMsg = new Text("");
 		errorMsg.setVisible(false);
@@ -425,16 +427,7 @@ public class TaxFX extends Application{
 			saveBtn.setOnAction(new EventHandler <ActionEvent>() {//saves tax info in to file
 				@Override
 				public void handle(ActionEvent arg0) {
-					try {
-						FileWriter fw = new FileWriter("C:\\Users\\timiv\\OneDrive\\Documents\\Git Projects\\Income-Tax-Calculator\\src\\tax\\tax info.txt");
-						BufferedWriter bw = new BufferedWriter(fw);
-						bw.write(nameTxtF.getText()+ " AGI: " + AGI +", Taxable Income: " + taxableInc + ", Gross Tax Liability: " + grossTaxLib);
-						bw.newLine();
-						bw.close();
-						fw.close();
-					}catch(Exception e) {
-						System.out.println("Save button did not work");
-					}
+					appendDataToFile(nameTxtF.getText(), AGI, taxableInc, grossTaxLib);
 					
 				}
 				
@@ -449,7 +442,27 @@ public class TaxFX extends Application{
 	}
 	
 	
-	
+	private void appendDataToFile(String name, double AGI, double taxableInc, double grossTaxLib) {
+        FileChooser fileChooser = new FileChooser();
+        // Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        // Show save file dialog
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
+                // Append data to the file
+               bw.write("Name:"+ name + ", AGI:$"+ AGI + ", Taxable Income:$"+ taxableInc + ", Gross Tax Liability:$"+grossTaxLib);
+               bw.newLine();
+               bw.newLine();
+               System.out.println("Data appended to: " + file.getAbsolutePath());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 	
 }
 
