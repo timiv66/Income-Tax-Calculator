@@ -52,7 +52,7 @@ public class TaxFX extends Application{
 		Pane p1 = new Pane();
 		Scene t = new Scene(p1,420,350);
 		t.setRoot(app(t));
-		mainStage.setTitle("Income Tax Calculator");
+		mainStage.setTitle("2023 Income Tax Calculator");
 		mainStage.setScene(t);
 		mainStage.show();
 		
@@ -158,21 +158,26 @@ public class TaxFX extends Application{
 		yesBtn.setTranslateX(170);
 		yesBtn.setTranslateY(170);
 		
+		Button noBtn = new Button("No");
+		noBtn.setTranslateX(210);
+		noBtn.setTranslateY(170);
+		
+		
+		//Yes button actions
 		yesBtn.setOnAction(new EventHandler <ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
 				moneyLb3.setVisible(true);
 				itmDedTxtF.setVisible(true);
+				noBtn.setDisable(true);
 			}
 		});
-		
 		yesBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
 	          @Override
 	          public void handle(MouseEvent e) {
 	        	  yesBtn.setEffect(shadow);
 	          }
 	        });
-
 		yesBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
 	          @Override
 	          public void handle(MouseEvent e) {
@@ -180,24 +185,20 @@ public class TaxFX extends Application{
 	          }
 	        });
 		
-		Button noBtn = new Button("No");
-		noBtn.setTranslateX(210);
-		noBtn.setTranslateY(170);
-		
+		//No button actions
 		noBtn.setOnAction(new EventHandler <ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
 			itmDedTxtF.setText("0");
+			yesBtn.setDisable(true);
 			}
 		});
-		
 		noBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
 	          @Override
 	          public void handle(MouseEvent e) {
 	        	  noBtn.setEffect(shadow);
 	          }
 	        });
-
 		noBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
 	          @Override
 	          public void handle(MouseEvent e) {
@@ -530,22 +531,21 @@ public class TaxFX extends Application{
 		   
 		 Button resetBtn = new Button("Reset");
 		 resetBtn.setTranslateX(370);
-		 resetBtn.setTranslateY(470);
-			
+		 resetBtn.setTranslateY(5);
+		
+		 //reset button actions
 		 resetBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
 		          @Override
 		          public void handle(MouseEvent e) {
 		            resetBtn.setEffect(shadow);
 		          }
 		        });
-	
 	     resetBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
 		          @Override
 		          public void handle(MouseEvent e) {
 		           resetBtn.setEffect(null);
 		          }
 		        });
-			
 		  resetBtn.setOnAction(new EventHandler <ActionEvent>() {//resets all fields
 				@Override
 				public void handle(ActionEvent arg0) {
@@ -563,8 +563,9 @@ public class TaxFX extends Application{
 					grossTaxLibTxt.setVisible(false);
 					taxCredTxt.setVisible(false);
 					taxDorRTxt.setVisible(false);
+					yesBtn.setDisable(false);
+					noBtn.setDisable(false);
 				}
-				
 			});
 			
 			Button saveBtn = new Button("Save");
