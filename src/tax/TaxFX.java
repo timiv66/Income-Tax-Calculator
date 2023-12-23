@@ -614,7 +614,8 @@ public class TaxFX extends Application{
         if (file != null) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
                 // Append data to the file
-               bw.write("Name:"+ name + ", AGI:$"+ AGI + ", Taxable Income:$"+ taxableInc + ", Gross Tax Liability:$"+grossTaxLib);
+               bw.write("Name:"+ name + ", AGI:$"+ AGI + ", Taxable Income:$"+ taxableInc + ", Gross Tax Liability:$"+grossTaxLib 
+            		   + ", Tax Credit:$" + taxCred + ", Taxes due or refunded:$"+taxDueorRef);
                bw.newLine();
                bw.newLine();
                System.out.println("Data appended to: " + file.getAbsolutePath());
