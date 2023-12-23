@@ -31,13 +31,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 public class TaxFX extends Application{
 	
-	private double taxableInc;
+	//the 5 values being calculated
 	private double AGI;
-	
+	private double taxableInc;
 	private double grossTaxLib;
 	private double taxCred;
 	private double taxDueorRef;
-	DropShadow shadow = new DropShadow();
+
+	
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -63,6 +64,7 @@ public class TaxFX extends Application{
 	public Pane app(Scene t) {
 		Font myFont = new Font("Impact",19);
 		Font txtfFont = new Font("Arial", 12);
+		DropShadow shadow = new DropShadow();
 		
 		UnaryOperator<TextFormatter.Change> filter = change -> {
            String text = change.getText();
@@ -73,10 +75,8 @@ public class TaxFX extends Application{
            // If not a number or empty, reject the change
            return null;
        };
-  
        TextFormatter<Integer> textFormatter1 = new TextFormatter<>(new IntegerStringConverter(), null, filter);
        TextFormatter<Integer> textFormatter2 = new TextFormatter<>(new IntegerStringConverter(), null, filter);
-		
 		
 		Label statusLbl = new Label("Filing Status:");
 		statusLbl.setFont(myFont);
@@ -88,7 +88,7 @@ public class TaxFX extends Application{
 		cb1.getItems().add("Married File Separately");
 		cb1.getItems().add("Married File Together");
 		cb1.getItems().add("Head of Household");
-		cb1.setTranslateX(115);
+		cb1.setTranslateX(108);
 		cb1.setTranslateY(11);
 		cb1.setStyle("-fx-font-family: Arial; -fx-font-size: 12;");
 		
@@ -99,18 +99,16 @@ public class TaxFX extends Application{
 		
 		Label moneyLbl = new Label("$");
 		moneyLbl.setFont(myFont);
-		moneyLbl.setTranslateX(133);
+		moneyLbl.setTranslateX(128);
 		moneyLbl.setTranslateY(51);
 		
 		TextField incomeTxtF = new TextField();
-		incomeTxtF.setTranslateX(145);
+		incomeTxtF.setTranslateX(141);
 		incomeTxtF.setTranslateY(51);
 		incomeTxtF.setFont(txtfFont);
-		
        // Set the TextFormatter to the TextField
        incomeTxtF.setTextFormatter(textFormatter1);
       
-		
 		Label numOfDepLbl = new Label("Number of Dependents:");
 		numOfDepLbl.setFont(myFont);
 		numOfDepLbl.setTranslateX(5);
@@ -119,8 +117,8 @@ public class TaxFX extends Application{
 		
 		ChoiceBox<Integer> cb2 = new ChoiceBox<Integer>();//choice box for depends
 		cb2.getItems().addAll(0,1,2,3,4,5,6,7,8,9,10);
-		cb2.setTranslateX(200);
-		cb2.setTranslateY(93);
+		cb2.setTranslateX(190);
+		cb2.setTranslateY(92);
 		cb2.setStyle("-fx-font-family: Arial; -fx-font-size: 12;");
 		
 		Label atlDeductionLbl = new Label("Above-the-line Deductions:");
@@ -129,15 +127,15 @@ public class TaxFX extends Application{
 		atlDeductionLbl.setTranslateY(129);
 		
 		TextField dedTxtF = new TextField();
-		dedTxtF.setTranslateX(247);
+		dedTxtF.setTranslateX(238);
 		dedTxtF.setTranslateY(131);
 		dedTxtF.setTextFormatter(textFormatter2);
 		dedTxtF.setFont(txtfFont);
 		
 		Label moneyLb2 = new Label("-$");
 		moneyLb2.setFont(myFont);
-		moneyLb2.setTranslateX(228);
-		moneyLb2.setTranslateY(131);
+		moneyLb2.setTranslateX(219);
+		moneyLb2.setTranslateY(130);
 		
 		Label itmDed = new Label("Itemized Deductions:");
 		itmDed.setFont(myFont);
@@ -150,12 +148,11 @@ public class TaxFX extends Application{
 		moneyLb3.setTranslateY(170);
 		moneyLb3.setVisible(false);
 		
-		
 		TextField itmDedTxtF = new TextField();
 		itmDedTxtF.setTranslateX(267);
 		itmDedTxtF.setTranslateY(170);
 		itmDedTxtF.setVisible(false);
-		
+		itmDedTxtF.setFont(txtfFont);
 		
 		Button yesBtn = new Button("Yes");
 		yesBtn.setTranslateX(170);
@@ -169,6 +166,20 @@ public class TaxFX extends Application{
 			}
 		});
 		
+		yesBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  yesBtn.setEffect(shadow);
+	          }
+	        });
+
+		yesBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  yesBtn.setEffect(null);
+	          }
+	        });
+		
 		Button noBtn = new Button("No");
 		noBtn.setTranslateX(210);
 		noBtn.setTranslateY(170);
@@ -180,6 +191,19 @@ public class TaxFX extends Application{
 			}
 		});
 		
+		noBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  noBtn.setEffect(shadow);
+	          }
+	        });
+
+		noBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  noBtn.setEffect(null);
+	          }
+	        });
 		
 		Label nameLbl = new Label("Name:");
 		nameLbl.setFont(myFont);
@@ -196,34 +220,40 @@ public class TaxFX extends Application{
 		errorMsg.setX(10);
 		errorMsg.setY(370);
 		errorMsg.setFill(Color.RED);
+		errorMsg.setFont(txtfFont);
 		
 		Text agiTxt = new Text("");
 		agiTxt.setX(10);
 		agiTxt.setY(370);
 		agiTxt.setVisible(false);
+		agiTxt.setFont(txtfFont);
 		
 		Text taxableIncTxt = new Text("");
 		taxableIncTxt.setX(10);
 		taxableIncTxt.setY(390);
 		taxableIncTxt.setVisible(false);
+		taxableIncTxt.setFont(txtfFont);
 		
 		Text grossTaxLibTxt = new Text("");
 		grossTaxLibTxt.setX(10);
 		grossTaxLibTxt.setY(410);
 		grossTaxLibTxt.setVisible(false);
+		grossTaxLibTxt.setFont(txtfFont);
 		
 		Text taxCredTxt = new Text("");
 		taxCredTxt.setX(10);
 		taxCredTxt.setY(430);
 		taxCredTxt.setVisible(false);
+		taxCredTxt.setFont(txtfFont);
 		
 		Text taxDorRTxt = new Text("");
 		taxDorRTxt.setX(10);
 		taxDorRTxt.setY(450);
 		taxDorRTxt.setVisible(false);
+		taxDorRTxt.setFont(txtfFont);
      
 		Button calcBtn = new Button("Calculate Income Tax");
-		calcBtn.setTranslateX(80);
+		calcBtn.setTranslateX(135);
 		calcBtn.setTranslateY(320);
 		
 		calcBtn.setOnAction(new EventHandler <ActionEvent>() {
@@ -231,6 +261,7 @@ public class TaxFX extends Application{
 			public void handle(ActionEvent args0) {
 				
 		       try {
+		    	   errorMsg.setVisible(false);
 		    	   t.getWindow().setHeight(550);
 					String statVal = (String) cb1.getValue();//gets value from status cb
 					double incomeVal = Double.parseDouble(incomeTxtF.getText());//gets value from income txt field
@@ -301,7 +332,7 @@ public class TaxFX extends Application{
 						taxCred=(2000-num3)*depVal;
 						taxCredTxt.setVisible(true);
 					}
-					else if(AGI < 200000) {
+					else if(AGI > 200000) {
 						double num1=AGI-400000;
 						int num2=(int)num1/1000;
 						int num3=num2*50;
@@ -497,10 +528,8 @@ public class TaxFX extends Application{
 		          }
 		        });
 		   
-		   
-			
 		 Button resetBtn = new Button("Reset");
-		 resetBtn.setTranslateX(270);
+		 resetBtn.setTranslateX(370);
 		 resetBtn.setTranslateY(470);
 			
 		 resetBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
@@ -532,6 +561,8 @@ public class TaxFX extends Application{
 					agiTxt.setVisible(false);
 					taxableIncTxt.setVisible(false);
 					grossTaxLibTxt.setVisible(false);
+					taxCredTxt.setVisible(false);
+					taxDorRTxt.setVisible(false);
 				}
 				
 			});
