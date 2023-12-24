@@ -38,30 +38,25 @@ public class TaxFX extends Application{
 	private double taxCred;
 	private double taxDueorRef;
 
-	
-	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		launch();
 	}
-	
 	
 	@Override
 	public void start(Stage mainStage) throws Exception {
 		// setting scene f
 		Pane p1 = new Pane();
 		Scene t = new Scene(p1,420,350);
+		t.setFill(null);
 		t.setRoot(app(t));
 		mainStage.setTitle("2023 Income Tax Calculator");
 		mainStage.setScene(t);
-		mainStage.show();
-		
-		
-		
-		
-			
+		mainStage.show();	
 	}
+	
 	public Pane app(Scene t) {
+		
 		Font myFont = new Font("Impact",19);
 		Font txtfFont = new Font("Arial", 12);
 		DropShadow shadow = new DropShadow();
@@ -252,6 +247,12 @@ public class TaxFX extends Application{
 		taxDorRTxt.setY(450);
 		taxDorRTxt.setVisible(false);
 		taxDorRTxt.setFont(txtfFont);
+		
+		ImageView moneyImg = new ImageView("https://cdn1.i-scmp.com/sites/default/files/styles/1200x800/public/images/methode/2019/03/01/2a632684-3c00-11e9-a334-8d034d5595df_image_hires_182228.jpg?itok=hXgwquyJ&v=1551435753");
+		moneyImg.setFitHeight(80);
+		moneyImg.setFitWidth(120);
+		moneyImg.setX(290);
+		moneyImg.setY(250);
      
 		Button calcBtn = new Button("Calculate Income Tax");
 		calcBtn.setTranslateX(135);
@@ -265,14 +266,15 @@ public class TaxFX extends Application{
 		    	   errorMsg.setVisible(false);
 		    	   t.getWindow().setHeight(550);
 					String statVal = (String) cb1.getValue();//gets value from status cb
-					double incomeVal = Double.parseDouble(incomeTxtF.getText());//gets value from income txt field
+					double anuIncomeVal = Double.parseDouble(incomeTxtF.getText());//gets value from income txt field
 					int depVal = (Integer) cb2.getValue();//gets value from dependents cb
 					double atlDeducVal = Double.parseDouble(dedTxtF.getText());//gets value from above the line deduction txt field
-					double itmDeducVal = Double.parseDouble(itmDedTxtF.getText());
+					double itmDeducVal = Double.parseDouble(itmDedTxtF.getText());//gets value from the itemized deduction txt field
 					
-					AGI = incomeVal-atlDeducVal;//Calculating AGI
+					AGI = anuIncomeVal-atlDeducVal;//Calculating AGI
 					agiTxt.setText("Your Adjusted Gross Income(AGI) is: $" + AGI);
 					agiTxt.setVisible(true);
+					
 					
 					//Calculating taxable income
 					if (statVal.matches("Single") || statVal.matches("Married File Separately")) {
@@ -549,7 +551,7 @@ public class TaxFX extends Application{
 		  resetBtn.setOnAction(new EventHandler <ActionEvent>() {//resets all fields
 				@Override
 				public void handle(ActionEvent arg0) {
-					t.getWindow().setHeight(400);
+					t.getWindow().setHeight(389);
 					cb1.setValue(null);
 					incomeTxtF.setText("");
 					cb2.setValue(null);
@@ -596,12 +598,11 @@ public class TaxFX extends Application{
 			Pane appPane = new Pane();
 			appPane.getChildren().addAll(statusLbl,cb1,incomeLbl,incomeTxtF,moneyLbl,numOfDepLbl,cb2,atlDeductionLbl,
 					dedTxtF,moneyLb2,nameLbl,nameTxtF,calcBtn,agiTxt,taxableIncTxt,grossTaxLibTxt,resetBtn,saveBtn,
-					errorMsg,taxCredTxt,taxDorRTxt,itmDed,moneyLb3,yesBtn,noBtn,itmDedTxtF);
+					errorMsg,taxCredTxt,taxDorRTxt,itmDed,moneyLb3,yesBtn,noBtn,itmDedTxtF,moneyImg);
 			return appPane;
 			
 		
 	}
-	
 	
 	private void appendDataToFile(String name, double AGI, double taxableInc, double grossTaxLib, double taxCred, double taxDueorRef) {
         FileChooser fileChooser = new FileChooser();
