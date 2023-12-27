@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -50,6 +51,8 @@ public class TaxFX extends Application{
 		Scene t = new Scene(p1,420,350);
 		t.setFill(null);
 		t.setRoot(app(t));
+		Image icon = new Image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnFpKmdkPy1ThQ50M-aPNIg7NV3KP7qnKqTw&usqp=CAU");
+		mainStage.getIcons().add(icon);
 		mainStage.setTitle("2023 Income Tax Calculator");
 		mainStage.setScene(t);
 		mainStage.show();	
@@ -252,7 +255,7 @@ public class TaxFX extends Application{
 		moneyImg.setFitHeight(80);
 		moneyImg.setFitWidth(120);
 		moneyImg.setX(290);
-		moneyImg.setY(250);
+		moneyImg.setY(265);
      
 		Button calcBtn = new Button("Calculate Income Tax");
 		calcBtn.setTranslateX(135);
@@ -263,8 +266,8 @@ public class TaxFX extends Application{
 			public void handle(ActionEvent args0) {
 				
 		       try {
-		    	   errorMsg.setVisible(false);
-		    	   t.getWindow().setHeight(550);
+		    	    errorMsg.setVisible(false);
+		    	    t.getWindow().setHeight(550);
 					String statVal = (String) cb1.getValue();//gets value from status cb
 					double anuIncomeVal = Double.parseDouble(incomeTxtF.getText());//gets value from income txt field
 					int depVal = (Integer) cb2.getValue();//gets value from dependents cb
@@ -289,7 +292,6 @@ public class TaxFX extends Application{
 							taxableIncTxt.setVisible(true);
 						}
 					}
-					
 					else if (statVal.matches("Married File Together")) {
 						if(itmDedTxtF.getText().matches("0")) {
 							taxableInc=AGI-27700;
