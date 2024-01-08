@@ -49,7 +49,7 @@ public class TaxFX extends Application{
 		// setting scene f
 		Pane p1 = new Pane();
 		Scene t = new Scene(p1,420,350);
-		t.setFill(null);
+		t.setFill(Color.BLUE);
 		t.setRoot(app(t));
 		Image icon = new Image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnFpKmdkPy1ThQ50M-aPNIg7NV3KP7qnKqTw&usqp=CAU");
 		mainStage.getIcons().add(icon);
@@ -317,7 +317,7 @@ public class TaxFX extends Application{
 						}
 					}
 					
-					
+
 					//calculating tax credit under limit
 					if (AGI <= 400000 || statVal.matches("Married File Together")) { 
 						taxCred=2000*depVal;
@@ -345,7 +345,6 @@ public class TaxFX extends Application{
 						taxCredTxt.setVisible(true);
 					}
 					
-						
 					//Calculating gross tax liability
 					switch (statVal) {
 						case "Single"://gross tax liability for single
