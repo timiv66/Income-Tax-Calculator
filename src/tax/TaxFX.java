@@ -32,13 +32,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 public class TaxFX extends Application{
 	
-	//the 5 values being calculated
-	private double AGI;
-	private double taxableInc;
-	private double grossTaxLib;
-	private double taxCred;
-	private double taxDueorRef;
-
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		launch();
@@ -59,6 +53,7 @@ public class TaxFX extends Application{
 	}
 	
 	public Pane app(Scene t) {
+		Filer newFiler = new Filer();
 		
 		Font myFont = new Font("Impact",19);
 		Font txtfFont = new Font("Arial", 12);
@@ -107,28 +102,26 @@ public class TaxFX extends Application{
        // Set the TextFormatter to the TextField
        incomeTxtF.setTextFormatter(textFormatter1);
       
-		Label numOfDepLbl = new Label("Number of Dependents:");
-		numOfDepLbl.setFont(myFont);
-		numOfDepLbl.setTranslateX(5);
-		numOfDepLbl.setTranslateY(90);
+		Label totalTaxCred = new Label("Total Tax Credits: $");
+		totalTaxCred.setFont(myFont);
+		totalTaxCred.setTranslateX(5);
+		totalTaxCred.setTranslateY(90);
 		
-		
-		ChoiceBox<Integer> cb2 = new ChoiceBox<Integer>();//choice box for depends
-		cb2.getItems().addAll(0,1,2,3,4,5,6,7,8,9,10);
-		cb2.setTranslateX(190);
-		cb2.setTranslateY(92);
-		cb2.setStyle("-fx-font-family: Arial; -fx-font-size: 12;");
+		TextField taxCredTxtF = new TextField();
+		taxCredTxtF.setTranslateX(190);
+		taxCredTxtF.setTranslateY(92);
+		taxCredTxtF.setStyle("-fx-font-family: Arial; -fx-font-size: 12;");
 		
 		Label atlDeductionLbl = new Label("Above-the-line Deductions:");
 		atlDeductionLbl.setFont(myFont);
 		atlDeductionLbl.setTranslateX(5);
 		atlDeductionLbl.setTranslateY(129);
 		
-		TextField dedTxtF = new TextField();
-		dedTxtF.setTranslateX(238);
-		dedTxtF.setTranslateY(131);
-		dedTxtF.setTextFormatter(textFormatter2);
-		dedTxtF.setFont(txtfFont);
+		TextField atlDedTxtF = new TextField();
+		atlDedTxtF.setTranslateX(238);
+		atlDedTxtF.setTranslateY(131);
+		atlDedTxtF.setTextFormatter(textFormatter2);
+		atlDedTxtF.setFont(txtfFont);
 		
 		Label moneyLb2 = new Label("-$");
 		moneyLb2.setFont(myFont);
@@ -239,15 +232,10 @@ public class TaxFX extends Application{
 		grossTaxLibTxt.setVisible(false);
 		grossTaxLibTxt.setFont(txtfFont);
 		
-		Text taxCredTxt = new Text("");
-		taxCredTxt.setX(10);
-		taxCredTxt.setY(430);
-		taxCredTxt.setVisible(false);
-		taxCredTxt.setFont(txtfFont);
 		
 		Text taxDorRTxt = new Text("");
 		taxDorRTxt.setX(10);
-		taxDorRTxt.setY(450);
+		taxDorRTxt.setY(430);
 		taxDorRTxt.setVisible(false);
 		taxDorRTxt.setFont(txtfFont);
 		
@@ -266,251 +254,38 @@ public class TaxFX extends Application{
 			public void handle(ActionEvent args0) {
 				
 		       try {
-		    	    errorMsg.setVisible(false);
-		    	    t.getWindow().setHeight(550);
-					String statVal = (String) cb1.getValue();//gets value from status cb
-					double anuIncomeVal = Double.parseDouble(incomeTxtF.getText());//gets value from income txt field
-					int depVal = (Integer) cb2.getValue();//gets value from dependents cb
-					double atlDeducVal = Double.parseDouble(dedTxtF.getText());//gets value from above the line deduction txt field
-					double itmDeducVal = Double.parseDouble(itmDedTxtF.getText());//gets value from the itemized deduction txt field
-					
-					AGI = anuIncomeVal-atlDeducVal;//Calculating AGI
-					agiTxt.setText("Your Adjusted Gross Income(AGI) is: $" + AGI);
-					agiTxt.setVisible(true);
-					
-					
-					//Calculating taxable income
-					if (statVal.matches("Single") || statVal.matches("Married File Separately")) {
-						if(itmDedTxtF.getText().matches("0")) {
-							taxableInc=AGI-13850;
-							taxableIncTxt.setText("Your taxable income is: $" + taxableInc);
-							taxableIncTxt.setVisible(true);
-						}
-						else {
-							taxableInc=AGI-itmDeducVal;
-							taxableIncTxt.setText("Your taxable income is: $" + taxableInc);
-							taxableIncTxt.setVisible(true);
-						}
-					}
-					else if (statVal.matches("Married File Together")) {
-						if(itmDedTxtF.getText().matches("0")) {
-							taxableInc=AGI-27700;
-							taxableIncTxt.setText("Your taxable income is: $" + taxableInc);
-							taxableIncTxt.setVisible(true);	
-						}
-						else {
-							taxableInc=AGI-itmDeducVal;
-							taxableIncTxt.setText("Your taxable income is: $" + taxableInc);
-							taxableIncTxt.setVisible(true);	
-						}
-					}
-					else if (statVal.matches("Head of Household")) {
-						if(itmDedTxtF.getText().matches("0")) {
-							taxableInc=AGI-20800;
-							taxableIncTxt.setText("Your taxable income is: $" + taxableInc);
-							taxableIncTxt.setVisible(true);
-						}
-						else {
-							taxableInc=AGI-itmDeducVal;
-							taxableIncTxt.setText("Your taxable income is: $" + taxableInc);
-							taxableIncTxt.setVisible(true);
-						}
-					}
-					
-
-					//calculating tax credit under limit
-					if (AGI <= 400000 || statVal.matches("Married File Together")) { 
-						taxCred=2000*depVal;
-						taxCredTxt.setText("Your tax credit is: $" + taxCred);
-						taxCredTxt.setVisible(true);
-					}
-					else if(AGI < 200000) {
-						taxCred=1600*depVal;
-						taxCredTxt.setText("Your tax credit is: $" + taxCred);
-						taxCredTxt.setVisible(true);
-					}
-					//calculating tax credit over limit
-					else if(AGI > 400000 || statVal.matches("Married File Together")){
-						double num1=AGI-400000;
-						int num2=(int)num1/1000;
-						int num3=num2*50;
-						taxCred=(2000-num3)*depVal;
-						taxCredTxt.setVisible(true);
-					}
-					else if(AGI > 200000) {
-						double num1=AGI-400000;
-						int num2=(int)num1/1000;
-						int num3=num2*50;
-						taxCred=(1600-num3)*depVal;
-						taxCredTxt.setVisible(true);
-					}
-					
-					//Calculating gross tax liability
-					switch (statVal) {
-						case "Single"://gross tax liability for single
-							if(taxableInc>0 && taxableInc<=11000) {
-								grossTaxLib=taxableInc*.10;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>11000 && taxableInc<=44725) {
-								grossTaxLib=taxableInc*.12;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>44725 && taxableInc<=95375) {
-								grossTaxLib=taxableInc*.22;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>95375 && taxableInc<=182100) {
-								grossTaxLib=taxableInc*.24;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>182100 && taxableInc<=231250) {
-								grossTaxLib=taxableInc*.32;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>231250 && taxableInc<=578125) {
-								grossTaxLib=taxableInc*.35;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>578125) {
-								grossTaxLib=taxableInc*.37;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							break;
-							
-						case"Married File Separately"://gross tax liability for Married File Separately
-							if(taxableInc>0 && taxableInc<=11000) {
-								grossTaxLib=taxableInc*.10;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>11000 && taxableInc<=44725) {
-								grossTaxLib=taxableInc*.12;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>44725 && taxableInc<=95375) {
-								grossTaxLib=taxableInc*.22;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>95375 && taxableInc<=182100) {
-								grossTaxLib=taxableInc*.24;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>182100 && taxableInc<=231250) {
-								grossTaxLib=taxableInc*.32;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>231250 && taxableInc<=346875) {
-								grossTaxLib=taxableInc*.35;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>346875) {
-								grossTaxLib=taxableInc*.37;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							break;
-							
-						case"Married File Together"://gross tax liability for Married File Separately Together
-							if(taxableInc>0 && taxableInc<=22000) {
-								grossTaxLib=taxableInc*.10;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>22000 && taxableInc<=89450) {
-								grossTaxLib=taxableInc*.12;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>89450 && taxableInc<=190750) {
-								grossTaxLib=taxableInc*.22;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>190750 && taxableInc<=364200) {
-								grossTaxLib=taxableInc*.24;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>364200 && taxableInc<=462500) {
-								grossTaxLib=taxableInc*.32;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>462500 && taxableInc<=693750) {
-								grossTaxLib=taxableInc*.35;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>693750) {
-								grossTaxLib=taxableInc*.37;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							break;
-							
-						case"Head of Household"://gross tax liability for Head of Household
-							if(taxableInc>0 && taxableInc<=15700) {
-								grossTaxLib=taxableInc*.10;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>15700 && taxableInc<=59850) {
-								grossTaxLib=taxableInc*.12;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>59850 && taxableInc<=95350) {
-								grossTaxLib=taxableInc*.22;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>95350 && taxableInc<=182100) {
-								grossTaxLib=taxableInc*.24;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>182100 && taxableInc<=231250) {
-								grossTaxLib=taxableInc*.32;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>231250 && taxableInc<=578100) {
-								grossTaxLib=taxableInc*.35;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							else if(taxableInc>578100) {
-								grossTaxLib=taxableInc*.37;
-								grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + grossTaxLib);
-								grossTaxLibTxt.setVisible(true);
-							}
-							break;	
-					}
-					//calculating tax due or owed
-					taxDueorRef=grossTaxLib-taxCred;
-					if(taxDueorRef>0) {
-						taxDorRTxt.setText("Your taxes due is: $" + taxDueorRef);
-						taxDorRTxt.setVisible(true);
-					}
-					else if(taxDueorRef<0) {
-						taxDorRTxt.setText("Your tax refund is :$" + Math.abs(taxDueorRef));
-						taxDorRTxt.setVisible(true);
-					}
-					
-					
+		    	   errorMsg.setVisible(false);
+		    	   t.getWindow().setHeight(550);
+		    	   
+		    	   
+		    	   newFiler.setAnnualIncome(Double.parseDouble(incomeTxtF.getText()));
+		    	   newFiler.setItmdeductions(Double.parseDouble(itmDedTxtF.getText()));
+		    	   newFiler.setAtldeductions(Double.parseDouble(atlDedTxtF.getText()));
+		    	   newFiler.setStatus((String) cb1.getValue());
+		    	   newFiler.setTaxCredits(Double.parseDouble(taxCredTxtF.getText()));
+		    	   newFiler.setName(nameTxtF.getText());
+		    	   
+		    	   //Calculate the AGI
+		    	   agiTxt.setText("Your Adjusted Gross Income(AGI) is: $" + newFiler.calcAGI());
+		    	   agiTxt.setVisible(true);
+		    	   
+		    	   //Calculate total deductions
+		    	   taxableIncTxt.setText("Your taxable income is: $" + newFiler.calcTaxIncome());
+		    	   taxableIncTxt.setVisible(true);
+		    	   
+		    	   //Calculate gross tax liability
+		    	   grossTaxLibTxt.setText("Your Gross Tax Liability is: $" + newFiler.calcGrossTax());
+		    	   grossTaxLibTxt.setVisible(true);
+		    	   
+		    	   //Calculate tax refund or tax due
+		    	   if (newFiler.calctaxDueorRef() < 0) {
+		    		   taxDorRTxt.setText("Your tax refund is : $" + Math.abs(newFiler.calctaxDueorRef()));
+		    		   taxDorRTxt.setVisible(true);
+		    	   }else {
+		    		   taxDorRTxt.setText("Your taxes due is : $" + newFiler.calctaxDueorRef());
+		    		   taxDorRTxt.setVisible(true);
+		    	   }
+		    
 		         }catch(Exception e) {
 		        	 errorMsg.setText("Please fill in all answer boxes");
 		        	 errorMsg.setVisible(true);
@@ -555,8 +330,8 @@ public class TaxFX extends Application{
 					t.getWindow().setHeight(389);
 					cb1.setValue(null);
 					incomeTxtF.setText("");
-					cb2.setValue(null);
-					dedTxtF.setText("");
+					taxCredTxtF.setText("");
+					atlDedTxtF.setText("");
 					nameTxtF.setText("");
 					moneyLb3.setVisible(false);
 					itmDedTxtF.setVisible(false);
@@ -564,7 +339,7 @@ public class TaxFX extends Application{
 					agiTxt.setVisible(false);
 					taxableIncTxt.setVisible(false);
 					grossTaxLibTxt.setVisible(false);
-					taxCredTxt.setVisible(false);
+					
 					taxDorRTxt.setVisible(false);
 					yesBtn.setDisable(false);
 					noBtn.setDisable(false);
@@ -578,7 +353,7 @@ public class TaxFX extends Application{
 			saveBtn.setOnAction(new EventHandler <ActionEvent>() {//saves tax info in to file
 				@Override
 				public void handle(ActionEvent arg0) {
-					appendDataToFile(nameTxtF.getText(), AGI, taxableInc, grossTaxLib, taxCred, taxDueorRef);
+					appendDataToFile(newFiler);
 				}
 			});
 			
@@ -597,15 +372,16 @@ public class TaxFX extends Application{
 		    });
 			
 			Pane appPane = new Pane();
-			appPane.getChildren().addAll(statusLbl,cb1,incomeLbl,incomeTxtF,moneyLbl,numOfDepLbl,cb2,atlDeductionLbl,
-					dedTxtF,moneyLb2,nameLbl,nameTxtF,calcBtn,agiTxt,taxableIncTxt,grossTaxLibTxt,resetBtn,saveBtn,
-					errorMsg,taxCredTxt,taxDorRTxt,itmDed,moneyLb3,yesBtn,noBtn,itmDedTxtF,moneyImg);
+			appPane.getChildren().addAll(statusLbl,cb1,incomeLbl,incomeTxtF,moneyLbl,totalTaxCred,taxCredTxtF,atlDeductionLbl,
+					atlDedTxtF,moneyLb2,nameLbl,nameTxtF,calcBtn,agiTxt,taxableIncTxt,grossTaxLibTxt,resetBtn,saveBtn,
+					errorMsg,taxDorRTxt,itmDed,moneyLb3,yesBtn,noBtn,itmDedTxtF,moneyImg);
 			return appPane;
 			
 		
 	}
 	
-	private void appendDataToFile(String name, double AGI, double taxableInc, double grossTaxLib, double taxCred, double taxDueorRef) {
+	public void appendDataToFile(Filer filer) {
+		
         FileChooser fileChooser = new FileChooser();
         // Set extension filter
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
@@ -617,8 +393,8 @@ public class TaxFX extends Application{
         if (file != null) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
                 // Append data to the file
-               bw.write("Name:"+ name + ", AGI:$"+ AGI + ", Taxable Income:$"+ taxableInc + ", Gross Tax Liability:$"+grossTaxLib 
-            		   + ", Tax Credit:$" + taxCred + ", Taxes due or refunded:$"+taxDueorRef);
+               bw.write("Name:"+ filer.getName() + ", AGI:$"+ filer.calcAGI() + ", Taxable Income:$" + filer.calcTaxIncome() + ", Gross Tax Liability:$"+filer.calcGrossTax() 
+            		   + ", Tax Credit:$" + filer.getTaxCredits() + ", Taxes due or refunded:$" + filer.calctaxDueorRef());
                bw.newLine();
                bw.newLine();
                System.out.println("Data appended to: " + file.getAbsolutePath());
